@@ -1,4 +1,5 @@
-# 牛子机器人-QQ机器人版
+# 牛子机器人
+![DickFighterBot](https://socialify.git.ci/zzzdajb/DickFighterBot/image?font=Inter&language=1&name=1&owner=1&pattern=Charlie+Brown&stargazers=1&theme=Auto)
 
 #### 给本仓库Star的小伙伴，牛子都会增长5cm！
 
