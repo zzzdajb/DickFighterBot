@@ -12,5 +12,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="KotlinJavaRuntime" level="project" />
     <orderEntry type="library" name="squareup.okhttp3.okhttp" level="project" />
+    <orderEntry type="library" name="io.github.cdimascio.dotenv.kotlin" level="project" />
   </component>
 </module>
