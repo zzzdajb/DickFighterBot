@@ -1,5 +1,5 @@
 # 斗战胜牛
-![DickFighterBot](https://socialify.git.ci/zzzdajb/DickFighterBot/image?font=Inter&language=1&name=1&owner=1&pattern=Charlie+Brown&stargazers=1&theme=Auto)
+![DickFighterBot](https://socialify.git.ci/zzzdajb/DickFighterBot/image?custom_description=A+Powerful+Bot+with+Modern+Access&description=1&language=1&logo=https%3A%2F%2Fs2.loli.net%2F2025%2F02%2F01%2FnsNWVLOuTIRhb4B.jpg&name=1&stargazers=1&theme=Light)
 
 #### 给本仓库Star的小伙伴，牛子都会增长5cm！
 
