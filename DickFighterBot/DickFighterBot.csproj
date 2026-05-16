@@ -20,4 +20,10 @@
       <Folder Include="Res\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="nlog.config">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>
