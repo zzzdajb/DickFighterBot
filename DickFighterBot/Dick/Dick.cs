@@ -32,13 +32,13 @@ public partial class Dick
             throw new Exception("GUID不能为空！");
         }
 
-        var result = await dickFighterDataBase.CheckDickWithGuid(GUID);
-        if (result.ifExisted)
+        var loaded = await dickFighterDataBase.CheckDickWithGuid(GUID);
+        if (loaded != null)
         {
-            Belongings = result.dickBelongings;
-            NickName = result.dickName;
-            Length = result.length;
-            GroupNumber = result.groupNumber;
+            Belongings = loaded.Belongings;
+            NickName = loaded.NickName;
+            Length = loaded.Length;
+            GroupNumber = loaded.GroupNumber;
 
             //加载体力
             Energy = await dickFighterDataBase.CheckDickEnergyWithGuid(GUID);
@@ -56,18 +56,15 @@ public partial class Dick
     public async Task<bool> LoadWithIds()
     {
         var dickFighterDataBase = new DickFighterDataBase();
-        var result = await dickFighterDataBase.CheckGuidWithTwoIds(Belongings, GroupNumber);
-        if (result.ifExisted)
+        GUID = await dickFighterDataBase.CheckGuidWithTwoIds(Belongings, GroupNumber);
+        if (GUID != null)
         {
-            GUID = result.guid;
             await LoadWithGuid();
-        }
-        else
-        {
-            Logger.Error("不存在的牛子！");
+            return true;
         }
 
-        return result.ifExisted;
+        Logger.Error("不存在的牛子！");
+        return false;
     }
 
     private async Task Save()

@@ -11,14 +11,13 @@ public class DickGenerator
         var dickFighterDataBase = new DickFighterDataBase();
 
         //判断是否已经有了牛子
-        var checkResult =
+        var existingDick =
             await dickFighterDataBase.GetDickWithIds(user_id,
                 group_id);
-        var ifExist = checkResult.Item1;
 
         string stringMessage;
 
-        if (ifExist)
+        if (existingDick != null)
         {
             stringMessage = $"[CQ:at,qq={user_id}]，你已经有了一只牛子，请不要贪心！";
         }

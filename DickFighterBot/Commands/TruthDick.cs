@@ -17,9 +17,9 @@ public class TruthDick
         var success = Random.Shared.NextDouble() < successRate;
         var dickFighterDataBase = new DickFighterDataBase();
 
-        var (dickExisted, newDick) = await dickFighterDataBase.GetDickWithIds(user_id, group_id);
+        var newDick = await dickFighterDataBase.GetDickWithIds(user_id, group_id);
 
-        if (dickExisted)
+        if (newDick != null)
         {
             var currentEnergy = await dickFighterDataBase.CheckDickEnergyWithGuid(newDick.GUID);
             newDick.Energy = currentEnergy;

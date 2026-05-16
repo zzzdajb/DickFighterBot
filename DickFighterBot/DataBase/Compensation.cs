@@ -1,4 +1,5 @@
-﻿using System.Data.SQLite;
+using System.Data.SQLite;
+using Dapper;
 
 namespace DickFighterBot.DataBase;
 
@@ -11,16 +12,9 @@ public partial class DickFighterDataBase
             await using var connection = new SQLiteConnection(DatabaseConnectionManager.ConnectionString);
             await connection.OpenAsync();
 
-            var command = new SQLiteCommand(connection)
-            {
-                CommandText =
-                    "UPDATE Energy SET EnergyLastUpdate=MIN(EnergyLastUpdate+@energyCompensate, 240) WHERE DickGUID IN (SELECT GUID FROM BasicInformation WHERE GroupNumber=@GroupNumber)"
-            };
-
-            command.Parameters.AddWithValue("@GroupNumber", group_id);
-            command.Parameters.AddWithValue("@energyCompensate", energyCompensate);
-
-            var rowsAffected = await command.ExecuteNonQueryAsync();
+            var rowsAffected = await connection.ExecuteAsync(
+                "UPDATE Energy SET EnergyLastUpdate=MIN(EnergyLastUpdate+@energyCompensate, 240) WHERE DickGUID IN (SELECT GUID FROM BasicInformation WHERE GroupNumber=@GroupNumber)",
+                new { GroupNumber = group_id, energyCompensate });
 
             return rowsAffected > 0;
         }

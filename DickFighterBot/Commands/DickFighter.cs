@@ -25,11 +25,11 @@ public class DickFighter
 
         var dickFighterDataBase = new DickFighterDataBase();
 
-        var (dickExisted, challengerDick) =
+        var challengerDick =
             await dickFighterDataBase.GetDickWithIds(user_id,
                 group_id);
 
-        if (dickExisted)
+        if (challengerDick != null)
         {
             challengerDick.Energy = await dickFighterDataBase.CheckDickEnergyWithGuid(challengerDick.GUID);
 

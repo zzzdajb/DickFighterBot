@@ -1,30 +1,20 @@
-﻿using System.Data.SQLite;
+using System.Data.SQLite;
+using Dapper;
 
 namespace DickFighterBot.DataBase;
 
 public partial class DickFighterDataBase
 {
-    public async Task<(bool, long)> CheckCoffeeInformation(string guid)
+    public async Task<long?> CheckCoffeeInformation(string guid)
     {
         try
         {
             await using var connection = new SQLiteConnection(DatabaseConnectionManager.ConnectionString);
             await connection.OpenAsync();
 
-            var command = new SQLiteCommand(connection)
-            {
-                CommandText =
-                    "SELECT * FROM CoffeeInformation WHERE GUID = @GUID "
-            };
-
-            command.Parameters.AddWithValue("@GUID", guid);
-
-            await using var reader = await command.ExecuteReaderAsync();
-
-            if (!await reader.ReadAsync()) return (false, -1);
-
-            var timeResult = Convert.ToInt64(reader["LastDrinkTime"]);
-            return (true, timeResult);
+            return await connection.QueryFirstOrDefaultAsync<long>(
+                "SELECT LastDrinkTime FROM CoffeeInformation WHERE GUID = @GUID",
+                new { GUID = guid });
         }
         catch (Exception e)
         {
@@ -41,16 +31,9 @@ public partial class DickFighterDataBase
             await using var connection = new SQLiteConnection(DatabaseConnectionManager.ConnectionString);
             await connection.OpenAsync();
 
-            var command = new SQLiteCommand(connection)
-            {
-                CommandText =
-                    "INSERT INTO CoffeeInformation (GUID,LastDrinkTime) VALUES (@GUID, @LastDrinkTime)"
-            };
-
-            command.Parameters.AddWithValue("@GUID", guid);
-            command.Parameters.AddWithValue("@LastDrinkTime", DateTimeOffset.Now.ToUnixTimeSeconds());
-
-            var rowsAffected = await command.ExecuteNonQueryAsync();
+            var rowsAffected = await connection.ExecuteAsync(
+                "INSERT INTO CoffeeInformation (GUID,LastDrinkTime) VALUES (@GUID, @LastDrinkTime)",
+                new { GUID = guid, LastDrinkTime = DateTimeOffset.Now.ToUnixTimeSeconds() });
 
             if (rowsAffected == 1) return true;
 
@@ -72,15 +55,9 @@ public partial class DickFighterDataBase
             await using var connection = new SQLiteConnection(DatabaseConnectionManager.ConnectionString);
             await connection.OpenAsync();
 
-            var command = new SQLiteCommand(connection)
-            {
-                CommandText =
-                    "UPDATE CoffeeInformation SET LastDrinkTime = @LastDrinkTime WHERE GUID = @GUID"
-            };
-            command.Parameters.AddWithValue("@GUID", guid);
-            command.Parameters.AddWithValue("@LastDrinkTime", DateTimeOffset.Now.ToUnixTimeSeconds());
-
-            var rowsAffected = await command.ExecuteNonQueryAsync();
+            var rowsAffected = await connection.ExecuteAsync(
+                "UPDATE CoffeeInformation SET LastDrinkTime = @LastDrinkTime WHERE GUID = @GUID",
+                new { GUID = guid, LastDrinkTime = DateTimeOffset.Now.ToUnixTimeSeconds() });
 
             if (rowsAffected == 1) return true;
 

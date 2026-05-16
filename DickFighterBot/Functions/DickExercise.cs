@@ -29,10 +29,10 @@ public class DickExercise
         var dickFighterDataBase = new DickFighterDataBase();
 
         //查询是否已经存在牛子
-        var (dickExisted, newDick) =
+        var newDick =
             await dickFighterDataBase.GetDickWithIds(user_id,
                 group_id);
-        if (dickExisted)
+        if (newDick != null)
         {
             var energyCost = exercisePerCost * exerciseTimes;
             //检查体力值是否足够

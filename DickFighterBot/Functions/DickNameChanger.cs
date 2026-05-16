@@ -14,14 +14,14 @@ public class DickNameChanger
         var (newName, ifNeedEdit) = 正则表达式.改牛子名(rawMessage);
         var dickFighterDataBase = new DickFighterDataBase();
 
-        var (dickExisted, newDick) =
+        var newDick =
             await dickFighterDataBase.GetDickWithIds(user_id,
                 group_id);
 
         if (ifNeedEdit)
         {
             string stringMessage;
-            if (dickExisted)
+            if (newDick != null)
             {
                 //如果需要修改名字并且有牛子
                 var changeResult = await dickFighterDataBase.UpdateDickNickName(user_id, group_id, newName);
