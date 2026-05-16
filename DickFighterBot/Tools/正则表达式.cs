@@ -7,27 +7,6 @@ public class 正则表达式
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger(); //获取日志记录器
 
-    public static (bool ifNeed, long output) 咬(string input)
-    {
-        const string pattern = @"咬\[CQ:at,qq=(\d+)\]";
-        var match = Regex.Match(input, pattern);
-
-        if (!match.Success) return (false, 0);
-
-        var result = Convert.ToInt64(match.Groups[1].Value);
-        return (true, result);
-    }
-    public static (bool ifNeed, long output) 摸(string input)
-    {
-        const string pattern = @"摸\[CQ:at,qq=(\d+)\]";
-        var match = Regex.Match(input, pattern);
-
-        if (!match.Success) return (false, 0);
-
-        var result = Convert.ToInt64(match.Groups[1].Value);
-        return (true, result);
-    }
-
     public static (string? newName, bool ifNeedEdit) 改牛子名(string input)
     {
         const string pattern = @"^改牛子名\s*(.*)$";
@@ -40,22 +19,6 @@ public class 正则表达式
             return (newName: match.Groups[1].Value, ifNeedEdit: true);
 
         return (newName: null, ifNeedEdit: false);
-    }
-
-    public static (bool ifNeed, string output) 丁真(string input)
-    {
-        const string pattern = @"^丁真\s*(.*)$";
-
-        var match = Regex.Match(input, pattern);
-
-        if (match.Success && match.Groups[1].Value.Length <= 10)
-        {
-            return (ifNeed: true, output: match.Groups[1].Value);
-        }
-        else
-        {
-            return (ifNeed: false, output: "");
-        }
     }
 
     public static (int? exerciseTimes, bool ifNeedExercise) 锻炼牛子(string input)

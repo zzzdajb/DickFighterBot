@@ -32,9 +32,6 @@ public class CommandDispatcher
         _commands.Add("牛子咖啡", (userId, groupId, _) => new Coffee().DrinkCoffee(userId, groupId));
         _commands.Add("补偿体力",
             (_, groupId, groupMessage) => new AdminManager().维护补偿(groupId, groupMessage));
-        /*_commands.Add("说脏话", (_, groupId, _) => new 语音生成器().Send(groupId));*/
-        _commands.Add("柴郡", (_, groupId, _) => new 柴郡生成器().Generate(groupId));
-        _commands.Add("不好看的", (_, groupId, _) => new 好看的().Generate(groupId));
     }
 
     public async Task Dispatch(long user_id, long group_id, Message.GroupMessage message)
@@ -52,32 +49,6 @@ public class CommandDispatcher
             if (rawMessage.Contains("锻炼牛子"))
                 await DickExercise.IfNeedExercise(rawMessage, user_id, group_id);
             else if (rawMessage.Contains("改牛子名")) await DickNameChanger.Change(user_id, group_id, rawMessage);
-            else if (rawMessage.Contains("丁真"))
-            {
-                var 内容 = Tools.正则表达式.丁真(rawMessage);
-                if (内容.ifNeed)
-                {
-                    var 语音生成器 = new 语音生成器();
-                    await 语音生成器.Send(group_id, 内容.output);
-                }
-            }
-            else if (rawMessage.Contains("咬"))
-            {
-                var targetQQ = Tools.正则表达式.咬(rawMessage);
-                if (targetQQ.ifNeed)
-                {
-                    var 头像交互 = new 头像交互();
-                    await 头像交互.咬(group_id, targetQQ.output);
-                }
-            }else if (rawMessage.Contains("摸"))
-            {
-                var targetQQ = Tools.正则表达式.摸(rawMessage);
-                if (targetQQ.ifNeed)
-                {
-                    var 头像交互 = new 头像交互();
-                    await 头像交互.摸(group_id, targetQQ.output);
-                }
-            }
         }
     }
 }
