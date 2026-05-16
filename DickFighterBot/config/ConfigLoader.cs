@@ -27,8 +27,10 @@ public class ConfigLoader
         if (!File.Exists(configPath))
         {
             var currentDirectory = Path.Combine(Directory.GetCurrentDirectory(), "config");
-            configPath = Path.Combine(currentDirectory, configName);
-            Logger.Info("没有检测到本地配置文件，已加载程序自带配置文件！");
+            var defaultConfigPath = Path.Combine(currentDirectory, configName);
+            Directory.CreateDirectory(LocalProgramPath);
+            File.Copy(defaultConfigPath, configPath);
+            Logger.Info("已将默认配置文件拷贝到本地：" + configPath);
         }
         else
         {
