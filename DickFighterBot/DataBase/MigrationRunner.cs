@@ -46,7 +46,8 @@ public static class MigrationRunner
             using var txn = await connection.BeginTransactionAsync();
             try
             {
-                await connection.ExecuteAsync(m.Sql, transaction: txn);
+                foreach (var stmt in m.Sql.Split(';', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
+                    await connection.ExecuteAsync(stmt, transaction: txn);
             }
             catch (SQLiteException) when (m.Version == 1)
             {

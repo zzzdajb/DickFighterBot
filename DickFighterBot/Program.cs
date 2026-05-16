@@ -59,19 +59,26 @@ public class WebSocketClient
 
     private static async Task Receive()
     {
-        var buffer = new byte[4096];
+        var buffer = new byte[65536];
+        var messageBuffer = new MemoryStream();
         while (websocketClient.State == WebSocketState.Open)
         {
-            var result =
-                await websocketClient.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-            var receivedMessage = Encoding.UTF8.GetString(buffer, 0, result.Count);
+            WebSocketReceiveResult result;
+            messageBuffer.SetLength(0);
+            do
+            {
+                result = await websocketClient.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                messageBuffer.Write(buffer, 0, result.Count);
+            } while (!result.EndOfMessage);
+
+            var receivedMessage = Encoding.UTF8.GetString(messageBuffer.GetBuffer(), 0, (int)messageBuffer.Length);
             Logger.Trace("收到消息：" + receivedMessage);
 
             var dispatcher = new CommandDispatcher();
 
             try
             {
-                var messageReceived = JsonSerializer.Deserialize<Message.GroupMessage>(receivedMessage); //反序列化收到的消息
+                var messageReceived = JsonSerializer.Deserialize<Message.GroupMessage>(receivedMessage);
 
                 if (messageReceived is { user_id: > 0, group_id: > 0 })
                     await dispatcher.Dispatch(messageReceived.user_id, messageReceived.group_id, messageReceived);
