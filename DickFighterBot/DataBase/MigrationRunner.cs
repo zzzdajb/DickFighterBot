@@ -1,10 +1,12 @@
 using System.Data.SQLite;
 using Dapper;
+using NLog;
 
 namespace DickFighterBot.DataBase;
 
 public static class MigrationRunner
 {
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
     private static readonly List<(int Version, string Description, string Sql)> Migrations = new()
     {
         (0, "Create initial tables", """
@@ -39,25 +41,32 @@ public static class MigrationRunner
             "CREATE TABLE IF NOT EXISTS SchemaVersion (Version INTEGER NOT NULL)");
 
         var currentVersion = await connection.QueryFirstOrDefaultAsync<int>(
-            "SELECT COALESCE(MAX(Version), 0) FROM SchemaVersion");
+            "SELECT COALESCE(MAX(Version), -1) FROM SchemaVersion");
 
         foreach (var m in Migrations.Where(m => m.Version > currentVersion).OrderBy(m => m.Version))
         {
+            Logger.Info($"正在执行迁移 [{m.Version}]：{m.Description}");
             using var txn = await connection.BeginTransactionAsync();
             try
             {
-                foreach (var stmt in m.Sql.Split(';', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
+                var statements = m.Sql.Split(';', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                Logger.Info($"  共 {statements.Length} 条SQL语句");
+                foreach (var stmt in statements)
+                {
+                    Logger.Trace($"  SQL: {stmt[..Math.Min(stmt.Length, 80)]}...");
                     await connection.ExecuteAsync(stmt, transaction: txn);
+                }
             }
             catch (SQLiteException) when (m.Version == 1)
             {
-                // Gender column may not exist on newer databases — safe to skip
+                Logger.Info("  Gender 列不存在，跳过");
             }
 
             await connection.ExecuteAsync(
                 "INSERT INTO SchemaVersion (Version) VALUES (@Version)",
                 new { Version = m.Version }, txn);
             await txn.CommitAsync();
+            Logger.Info($"  迁移 [{m.Version}] 完成");
         }
     }
 }
