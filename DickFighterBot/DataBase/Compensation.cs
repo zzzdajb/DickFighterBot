@@ -14,7 +14,7 @@ public partial class DickFighterDataBase
             var command = new SQLiteCommand(connection)
             {
                 CommandText =
-                    "UPDATE Energy SET EnergyLastUpdate=EnergyLastUpdate+@energyCompensate WHERE DickGUID IN (SELECT GUID FROM BasicInformation WHERE GroupNumber=@GroupNumber)"
+                    "UPDATE Energy SET EnergyLastUpdate=MIN(EnergyLastUpdate+@energyCompensate, 240) WHERE DickGUID IN (SELECT GUID FROM BasicInformation WHERE GroupNumber=@GroupNumber)"
             };
 
             command.Parameters.AddWithValue("@GroupNumber", group_id);

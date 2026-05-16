@@ -47,7 +47,7 @@ public partial class DickFighterDataBase
                 CommandText =
                     "UPDATE Energy SET EnergyLastUpdate=@EnergyLastUpdate,EnergyLastUpdateTime=@EnergyLastUpdateTime  WHERE DickGUID = @DickGUID"
             };
-            command.Parameters.AddWithValue("@EnergyLastUpdate", energy);
+            command.Parameters.AddWithValue("@EnergyLastUpdate", Math.Clamp(energy, 0, 240));
             command.Parameters.AddWithValue("@EnergyLastUpdateTime", DateTimeOffset.Now.ToUnixTimeSeconds());
             command.Parameters.AddWithValue("@DickGUID", guid);
 

@@ -5,7 +5,7 @@ namespace DickFighterBot.Dick;
 
 public partial class Dick
 {
-    private const int MaxEnergy = 360; //体力最大值
+    private const int MaxEnergy = 240;
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     private int _energy;
