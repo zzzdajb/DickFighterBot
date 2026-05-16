@@ -23,27 +23,26 @@ public partial class DickFighterDataBase
             await connection.OpenAsync();
             using var txn = await connection.BeginTransactionAsync();
 
-            var rows = await connection.ExecuteAsync(
+            await connection.ExecuteAsync(
                 "INSERT INTO BasicInformation (GUID, DickBelongings, NickName, Length, GroupNumber) " +
-                "VALUES (@GUID, @DickBelongings, @NickName, @Length, @GroupNumber);" +
+                "VALUES (@GUID, @DickBelongings, @NickName, @Length, @GroupNumber)",
+                new
+                {
+                    GUID = newDick.GUID, DickBelongings = userId, NickName = "软弱牛子", Length = newDick.Length,
+                    GroupNumber = groupId
+                }, txn);
+
+            await connection.ExecuteAsync(
                 "INSERT INTO Energy (DickGUID, EnergyLastUpdate, EnergyLastUpdateTime) " +
                 "VALUES (@DickGUID, @EnergyLastUpdate, @EnergyLastUpdateTime)",
                 new
                 {
-                    GUID = newDick.GUID, DickBelongings = userId, NickName = "软弱牛子", Length = newDick.Length,
-                    GroupNumber = groupId,
                     DickGUID = newDick.GUID, EnergyLastUpdate = 240,
                     EnergyLastUpdateTime = DateTimeOffset.Now.ToUnixTimeSeconds()
                 }, txn);
 
-            if (rows > 0)
-            {
-                await txn.CommitAsync();
-                return true;
-            }
-
-            await txn.RollbackAsync();
-            return false;
+            await txn.CommitAsync();
+            return true;
         }
         catch (Exception e)
         {
