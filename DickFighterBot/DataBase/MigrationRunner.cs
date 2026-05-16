@@ -56,16 +56,23 @@ public static class MigrationRunner
                     Logger.Trace($"  SQL: {stmt[..Math.Min(stmt.Length, 80)]}...");
                     await connection.ExecuteAsync(stmt, transaction: txn);
                 }
+
+                await connection.ExecuteAsync(
+                    "INSERT INTO SchemaVersion (Version) VALUES (@Version)",
+                    new { Version = m.Version }, txn);
+                await txn.CommitAsync();
             }
-            catch (SQLiteException) when (m.Version == 1)
+            catch (SQLiteException ex) when (m.Version == 1)
             {
-                Logger.Info("  Gender 列不存在，跳过");
+                Logger.Info($"  Gender 列不存在，跳过 ({ex.Message})");
+                await txn.RollbackAsync();
+                using var txn2 = await connection.BeginTransactionAsync();
+                await connection.ExecuteAsync(
+                    "INSERT INTO SchemaVersion (Version) VALUES (@Version)",
+                    new { Version = m.Version }, txn2);
+                await txn2.CommitAsync();
             }
 
-            await connection.ExecuteAsync(
-                "INSERT INTO SchemaVersion (Version) VALUES (@Version)",
-                new { Version = m.Version }, txn);
-            await txn.CommitAsync();
             Logger.Info($"  迁移 [{m.Version}] 完成");
         }
     }

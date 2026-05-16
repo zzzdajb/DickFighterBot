@@ -12,7 +12,7 @@ public partial class DickFighterDataBase
             await using var connection = new SQLiteConnection(DatabaseConnectionManager.ConnectionString);
             await connection.OpenAsync();
 
-            return await connection.QueryFirstOrDefaultAsync<long>(
+            return await connection.QueryFirstOrDefaultAsync<long?>(
                 "SELECT LastDrinkTime FROM CoffeeInformation WHERE GUID = @GUID",
                 new { GUID = guid });
         }
