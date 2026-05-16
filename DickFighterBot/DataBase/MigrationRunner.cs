@@ -25,7 +25,7 @@ public static class MigrationRunner
                                         LastDrinkTime INTEGER
                                     );
                                     """),
-        (1, "Drop deprecated Gender column", "ALTER TABLE BasicInformation DROP COLUMN IF EXISTS Gender"),
+        (1, "Drop deprecated Gender column", "ALTER TABLE BasicInformation DROP COLUMN Gender"),
         (2, "Drop deprecated tables", """
                                        DROP TABLE IF EXISTS GachaInformation;
                                        DROP TABLE IF EXISTS ExerciseRecord;
@@ -44,7 +44,15 @@ public static class MigrationRunner
         foreach (var m in Migrations.Where(m => m.Version > currentVersion).OrderBy(m => m.Version))
         {
             using var txn = await connection.BeginTransactionAsync();
-            await connection.ExecuteAsync(m.Sql, transaction: txn);
+            try
+            {
+                await connection.ExecuteAsync(m.Sql, transaction: txn);
+            }
+            catch (SQLiteException) when (m.Version == 1)
+            {
+                // Gender column may not exist on newer databases — safe to skip
+            }
+
             await connection.ExecuteAsync(
                 "INSERT INTO SchemaVersion (Version) VALUES (@Version)",
                 new { Version = m.Version }, txn);
