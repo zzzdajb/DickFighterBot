@@ -8,7 +8,7 @@
 
 ## 依赖
 
-- [.NET 8.0+](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+- [.NET 10.0+](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
 - [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)（或其他 OneBot 兼容的 QQ 框架）
 - SQLite（由 System.Data.SQLite 自动管理）
 
@@ -23,6 +23,8 @@
   "MainSettings": {
     "ws_host": "127.0.0.1",
     "port": 3001,
+    "access_token": "",
+    "use_wss": false,
     "Interval": 5000
   },
   "DickData": {
@@ -43,6 +45,8 @@
 |--------|------|
 | `ws_host` | go-cqhttp WebSocket 地址 |
 | `port` | go-cqhttp WebSocket 端口 |
+| `access_token` | WebSocket 鉴权 Token，与 go-cqhttp 的 `access_token` 保持一致，留空则不启用鉴权 |
+| `use_wss` | 是否启用加密连接（WSS），需要 go-cqhttp 端同步配置 |
 | `Interval` | 消息发送间隔（ms） |
 | `FightEnergyCost` | 每次斗牛消耗体力 |
 | `ExerciseEnergyCost` | 每次锻炼消耗体力 |
