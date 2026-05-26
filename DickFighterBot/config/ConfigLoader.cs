@@ -59,6 +59,8 @@ public class ConfigLoader
     {
         public string ws_host { get; set; }
         public int port { get; set; }
+        public string access_token { get; set; }
+        public bool use_wss { get; set; }
         public int Interval { get; set; }
     }
 

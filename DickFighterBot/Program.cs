@@ -17,17 +17,49 @@ public class WebSocketClient
     {
         await DickFighterDataBase.Initialize(); //初始化数据库
 
-        websocketClient = new ClientWebSocket();
-
         //加载配置文件
         var configFile = ConfigLoader.Load();
-        var serverUri = new Uri($"ws://{configFile.MainSettings.ws_host}:{configFile.MainSettings.port}");
+        var protocol = configFile.MainSettings.use_wss ? "wss" : "ws";
+        var serverUri = new Uri($"{protocol}://{configFile.MainSettings.ws_host}:{configFile.MainSettings.port}");
+
+        const int maxRetry = 10;
+        const int retryDelayMs = 5000;
+
+        for (var attempt = 1; attempt <= maxRetry; attempt++)
+        {
+            websocketClient = new ClientWebSocket();
+
+            if (!string.IsNullOrEmpty(configFile.MainSettings.access_token))
+            {
+                websocketClient.Options.SetRequestHeader("Authorization",
+                    $"Bearer {configFile.MainSettings.access_token}");
+            }
+
+            try
+            {
+                await websocketClient.ConnectAsync(serverUri, CancellationToken.None);
+                Logger.Info("WebSocket服务器连接成功！");
+                break;
+            }
+            catch (Exception ex)
+            {
+                websocketClient.Dispose();
+                if (attempt == maxRetry)
+                {
+                    Logger.Fatal($"WebSocket连接失败（已重试{maxRetry}次）：" + ex.Message);
+                    Logger.Fatal("错误详情：" + ex.StackTrace);
+                    Logger.Info("按任意键退出程序。");
+                    Console.ReadKey();
+                    return;
+                }
+
+                Logger.Warn($"WebSocket连接失败（第{attempt}/{maxRetry}次重试）：{ex.Message}，{retryDelayMs / 1000}秒后重试...");
+                await Task.Delay(retryDelayMs);
+            }
+        }
 
         try
         {
-            await websocketClient.ConnectAsync(serverUri, CancellationToken.None);
-            Logger.Info("WebSocket服务器连接成功！");
-
             // 启动消息接收任务，并等待其完成
             var receiveTask = Receive();
             await receiveTask;

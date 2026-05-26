@@ -2,6 +2,8 @@
   "MainSettings": {
     "ws_host": "127.0.0.1",
     "port": 3001,
+    "access_token": "",
+    "use_wss": false,
     "Interval": 5000
   },
   "DickData": {
