@@ -73,6 +73,17 @@ public partial class DickFighterDataBase
             new { ExcludedGuid = guid });
     }
 
+    public async Task<Dick.Dick?> GetRandomDick(string guid, long userId)
+    {
+        await using var connection = new SQLiteConnection(DatabaseConnectionManager.ConnectionString);
+        await connection.OpenAsync();
+
+        return await connection.QueryFirstOrDefaultAsync<Dick.Dick>(
+            "SELECT GUID, DickBelongings AS Belongings, NickName, Length FROM BasicInformation " +
+            "WHERE GUID != @ExcludedGuid AND DickBelongings != @UserId ORDER BY RANDOM() LIMIT 1",
+            new { ExcludedGuid = guid, UserId = userId });
+    }
+
     public async Task<RankInfo> GetLengthRanks(string guid, long groupNumber)
     {
         await using var connection = new SQLiteConnection(DatabaseConnectionManager.ConnectionString);

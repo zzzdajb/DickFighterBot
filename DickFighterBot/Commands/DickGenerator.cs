@@ -34,7 +34,7 @@ public class DickGenerator
                 newDick);
 
             stringMessage =
-                $"[CQ:at,qq={user_id}]，你的牛子[{newDick.GUID}]已经成功生成，初始长度为{newDick.Length:F3}cm。\n" +
+                $"[CQ:at,qq={user_id}]，你的牛子[{newDick.NickName}]已经成功生成，初始长度为{newDick.Length:F1}cm。\n" +
                 $"初始生成的牛子默认拥有240点体力，请及时使用，防止体力溢出！你可以使用“改牛子名 [新牛子名]”指令来更改牛子的姓名。";
         }
 

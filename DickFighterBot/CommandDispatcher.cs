@@ -23,6 +23,7 @@ public class CommandDispatcher
         _commands.Add("生成牛子",
             (userId, groupId, groupMessage) => new DickGenerator().Generate(userId, groupId, groupMessage));
         _commands.Add("斗牛", (userId, groupId, _) => new DickFighter().NewFight(userId, groupId));
+        _commands.Add("跨服斗牛", (userId, groupId, _) => new DickFighter().NewCrossGroupFight(userId, groupId));
         _commands.Add("群牛子榜",
             (_, groupId, _) => new DickRank().GetGroupRank(groupId));
         _commands.Add("全服牛子榜",

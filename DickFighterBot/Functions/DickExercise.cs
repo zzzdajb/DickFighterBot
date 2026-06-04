@@ -72,25 +72,25 @@ public class DickExercise
                 {
                     var winMessagePart1 = winString[Random.Shared.Next(0, winString.Length)];
                     outputMessage =
-                        $"[CQ:at,qq={user_id}]，你的牛子“{newDick.NickName}”消耗{energyCost}体力值完成了{exerciseTimes}次锻炼！" +
+                        $"[CQ:at,qq={user_id}]，你的牛子[{newDick.NickName}]消耗{energyCost}体力值完成了{exerciseTimes}次锻炼！" +
                         winMessagePart1 +
-                        $"增长了{Math.Abs(totalLengthDifference):F3}cm，你的牛子目前长度为{newDick.Length:F2}cm，体力值为{newEnergy}/240。" +
+                        $"增长了{Math.Abs(totalLengthDifference):F2}cm，你的牛子目前长度为{newDick.Length:F1}cm，体力值为{newEnergy}/240。" +
                         tipsMessage + tipsMessageOfNegativeDick;
                 }
                 else
                 {
                     var loseMessagePart1 = loseString[Random.Shared.Next(0, loseString.Length)];
                     outputMessage =
-                        $"[CQ:at,qq={user_id}]，你的牛子“{newDick.NickName}”消耗{energyCost}体力值完成了{exerciseTimes}次锻炼！" +
+                        $"[CQ:at,qq={user_id}]，你的牛子[{newDick.NickName}]消耗{energyCost}体力值完成了{exerciseTimes}次锻炼！" +
                         loseMessagePart1 +
-                        $"缩短了{Math.Abs(totalLengthDifference):F3}cm，你的牛子目前长度为{newDick.Length:F2}cm，体力值为{newEnergy}/240。" +
+                        $"缩短了{Math.Abs(totalLengthDifference):F2}cm，你的牛子目前长度为{newDick.Length:F1}cm，体力值为{newEnergy}/240。" +
                         tipsMessage + tipsMessageOfNegativeDick;
                 }
             }
             else
             {
                 outputMessage =
-                    $"[CQ:at,qq={user_id}]，你的牛子“{newDick.NickName}”，体力值不足，无法锻炼！当前体力值为{currentEnergy}/240" +
+                    $"[CQ:at,qq={user_id}]，你的牛子[{newDick.NickName}]，体力值不足，无法锻炼！当前体力值为{currentEnergy}/240" +
                     tipsMessage + tipsMessageOfNegativeDick;
             }
         }

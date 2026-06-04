@@ -50,7 +50,7 @@ public class DickFighter
                     var battleResult = FightCalculator.Calculate(challengerDick.Length,
                         defenderDick.Length, challengerDick.Length - defenderDick.Length);
                     var stringMessage1 =
-                        $"[CQ:at,qq={user_id}]，你的牛子“{challengerDick.NickName}”，消耗{energyCost}点体力，向{defenderDick.Belongings}的牛子“{defenderDick.NickName}” 发起了跨服斗牛！根据牛科院物理研究所计算，你的牛子胜率为{battleResult.winRatePct:F1}%。";
+                        $"[CQ:at,qq={user_id}]，你的牛子[{challengerDick.NickName}]，消耗{energyCost}点体力，向{defenderDick.Belongings}的牛子[{defenderDick.NickName}] 发起了跨服斗牛！根据牛科院物理研究所计算，你的牛子胜率为{battleResult.winRatePct:F1}%。";
 
                     //限制长度变化，防止以小博大
                     battleResult.challengerChange =
@@ -67,8 +67,8 @@ public class DickFighter
                         defenderDick.GUID);
 
                     var stringMessage2 = battleResult.isWin
-                        ? $"可喜可贺的是，你的牛子“{challengerDick.NickName}”在斗牛当中获得了胜利！长度增加了{battleResult.challengerChange:F3}cm，目前长度为{challengerDick.Length:F1}cm。对方牛子“{defenderDick.NickName}”缩短了{Math.Abs(battleResult.defenderChange):F3}cm，目前长度为{defenderDick.Length:F1}cm。"
-                        : $"不幸的是，你的牛子“{challengerDick.NickName}”在斗牛当中遗憾地失败！长度缩短了{Math.Abs(battleResult.challengerChange):F3}cm，目前长度为{challengerDick.Length:F1}cm。对方牛子“{defenderDick.NickName}”长度增加了{battleResult.defenderChange:F3}cm，目前长度为{defenderDick.Length:F1}cm";
+                        ? $"可喜可贺的是，你的牛子[{challengerDick.NickName}]在斗牛当中获得了胜利！长度增加了{battleResult.challengerChange:F3}cm，目前长度为{challengerDick.Length:F1}cm。对方牛子[{defenderDick.NickName}]缩短了{Math.Abs(battleResult.defenderChange):F3}cm，目前长度为{defenderDick.Length:F1}cm。"
+                        : $"不幸的是，你的牛子[{challengerDick.NickName}]在斗牛当中遗憾地失败！长度缩短了{Math.Abs(battleResult.challengerChange):F3}cm，目前长度为{challengerDick.Length:F1}cm。对方牛子[{defenderDick.NickName}]长度增加了{battleResult.defenderChange:F3}cm，目前长度为{defenderDick.Length:F1}cm";
 
                     var stringMessage3 = $"\n目前，你的牛子体力值为{challengerDick.Energy}/240。";
 
@@ -82,7 +82,7 @@ public class DickFighter
             else
             {
                 outputMessage =
-                    $"[CQ:at,qq={user_id}]，你的牛子“{challengerDick.NickName}”，体力值不足，无法进行跨服斗牛！当前体力值为{currentEnergy}/240";
+                    $"[CQ:at,qq={user_id}]，你的牛子[{challengerDick.NickName}]，体力值不足，无法进行跨服斗牛！当前体力值为{currentEnergy}/240";
             }
         }
         else
@@ -105,6 +105,23 @@ public class DickFighter
         else
         {
             outputMessage = await dick.Fight();
+        }
+
+        await WebSocketClient.Send(群消息序列化工具.Generate(outputMessage, group_id));
+    }
+
+    public async Task NewCrossGroupFight(long user_id, long group_id)
+    {
+        var dick = new Dick.Dick { Belongings = user_id, GroupNumber = group_id };
+        var ifExisted = await dick.LoadWithIds();
+        string outputMessage;
+        if (ifExisted == false)
+        {
+            outputMessage = TipsMessage.DickNotFound(dick.Belongings);
+        }
+        else
+        {
+            outputMessage = await dick.CrossGroupFight();
         }
 
         await WebSocketClient.Send(群消息序列化工具.Generate(outputMessage, group_id));
