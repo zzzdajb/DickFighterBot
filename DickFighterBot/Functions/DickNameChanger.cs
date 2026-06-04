@@ -1,4 +1,5 @@
-﻿using DickFighterBot.DataBase;
+﻿using DickFighterBot.Commands;
+using DickFighterBot.DataBase;
 using DickFighterBot.PublicAPI;
 using DickFighterBot.Tools;
 using NLog;
@@ -23,6 +24,14 @@ public class DickNameChanger
             string stringMessage;
             if (newDick != null)
             {
+                //敏感词检查
+                if (BadWordFilter.ContainsBadWord(newName))
+                {
+                    await WebSocketClient.Send(群消息序列化工具.Generate(
+                        $"[CQ:at,qq={user_id}]，你取的什么破名字！牛子名字包含敏感词，请换一个！", group_id));
+                    return;
+                }
+
                 //如果需要修改名字并且有牛子
                 var changeResult = await dickFighterDataBase.UpdateDickNickName(user_id, group_id, newName);
                 if (changeResult)

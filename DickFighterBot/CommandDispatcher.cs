@@ -50,6 +50,7 @@ public class CommandDispatcher
             if (rawMessage.Contains("锻炼牛子"))
                 await DickExercise.IfNeedExercise(rawMessage, user_id, group_id);
             else if (rawMessage.Contains("改牛子名")) await DickNameChanger.Change(user_id, group_id, rawMessage);
+            else if (rawMessage.Contains("牛子骰子")) await new DickDice().Roll(user_id, group_id, rawMessage);
         }
     }
 }
