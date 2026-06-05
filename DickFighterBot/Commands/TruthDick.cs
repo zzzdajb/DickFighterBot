@@ -56,7 +56,7 @@ public class TruthDick
                     if (enemyDick == null)
                     {
                         outputMessage =
-                            $"[CQ:at,qq={user_id}]，你花费{energyCost}体力，尝试使用试用牛子"真理牛子"对群内的随机牛子发动追加攻击！然而，群内暂无其他牛子可供攻击。";
+                            $"[CQ:at,qq={user_id}]，你花费{energyCost}体力，尝试使用试用牛子“真理牛子”对群内的随机牛子发动追加攻击！然而，群内暂无其他牛子可供攻击。";
                     }
                     else
                     {
@@ -80,9 +80,9 @@ public class TruthDick
                         await dickFighterDataBase.UpdateDickLength(newDick.Length, newDick.GUID);
 
                         outputMessage =
-                            $”[CQ:at,qq={user_id}]，你花费{energyCost}体力，尝试使用试用牛子”真理牛子”对群内的随机牛子发动追加攻击！” +
-                            $”根据星际牛子公司测算，本次追加攻击发动的概率为{successRate * 100}%。天有不测风云，牛有旦夕祸福。[CQ:at,qq={enemyDick.Belongings}]的牛子[{enemyDick.NickName}]受到了你的攻击!该牛子的长度从{enemyOldLength:F1}cm变化为{newLength:F1}cm，长度变化为{lengthDifference:F2}cm。” +
-                            $”在追加攻击发动的同时，你的牛子[{newDick.NickName}]掠夺了{winnerGet:F2}cm的长度，当前长度为{newDick.Length:F1}cm。”;
+                            $"[CQ:at,qq={user_id}]，你花费{energyCost}体力，尝试使用试用牛子“真理牛子”对群内的随机牛子发动追加攻击！" +
+                            $"根据星际牛子公司测算，本次追加攻击发动的概率为{successRate * 100}%。天有不测风云，牛有旦夕祸福。[CQ:at,qq={enemyDick.Belongings}]的牛子[{enemyDick.NickName}]受到了你的攻击!该牛子的长度从{enemyOldLength:F1}cm变化为{newLength:F1}cm，长度变化为{lengthDifference:F2}cm。" +
+                            $"在追加攻击发动的同时，你的牛子[{newDick.NickName}]掠夺了{winnerGet:F2}cm的长度，当前长度为{newDick.Length:F1}cm。";
                     }
                 }
                 else
