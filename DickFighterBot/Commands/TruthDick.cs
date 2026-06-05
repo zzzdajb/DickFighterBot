@@ -53,29 +53,37 @@ public class TruthDick
                         }
                     }
 
-                    var enemyOldLength = enemyDick.Length;
-                    double newLength;
-
-                    var pctForCalculate = 0.35d; //取对数的比例，只有这一部分会被取对数
-                    var restPct = 1 - pctForCalculate;
-                    if (enemyOldLength > 0)
-                        newLength = Math.Log(enemyOldLength * pctForCalculate + 1) + restPct * enemyOldLength;
+                    if (enemyDick == null)
+                    {
+                        outputMessage =
+                            $"[CQ:at,qq={user_id}]，你花费{energyCost}体力，尝试使用试用牛子"真理牛子"对群内的随机牛子发动追加攻击！然而，群内暂无其他牛子可供攻击。";
+                    }
                     else
-                        newLength = -Math.Log(Math.Abs(enemyOldLength * pctForCalculate) + 1) +
-                                    restPct * enemyOldLength;
+                    {
+                        var enemyOldLength = enemyDick.Length;
+                        double newLength;
 
-                    var lengthDifference = newLength - enemyOldLength;
-                    enemyDick.Length = newLength;
-                    await dickFighterDataBase.UpdateDickLength(newLength, enemyDick.GUID);
+                        var pctForCalculate = 0.35d; //取对数的比例，只有这一部分会被取对数
+                        var restPct = 1 - pctForCalculate;
+                        if (enemyOldLength > 0)
+                            newLength = Math.Log(enemyOldLength * pctForCalculate + 1) + restPct * enemyOldLength;
+                        else
+                            newLength = -Math.Log(Math.Abs(enemyOldLength * pctForCalculate) + 1) +
+                                        restPct * enemyOldLength;
 
-                    var winnerGet = -lengthDifference * RandomGenerator.GetRandomDouble(0.3, 0.4);
-                    newDick.Length += winnerGet;
-                    await dickFighterDataBase.UpdateDickLength(newDick.Length, newDick.GUID);
+                        var lengthDifference = newLength - enemyOldLength;
+                        enemyDick.Length = newLength;
+                        await dickFighterDataBase.UpdateDickLength(newLength, enemyDick.GUID);
 
-                    outputMessage =
-                        $"[CQ:at,qq={user_id}]，你花费{energyCost}体力，尝试使用试用牛子“真理牛子”对群内的随机牛子发动追加攻击！" +
-                        $"根据星际牛子公司测算，本次追加攻击发动的概率为{successRate * 100}%。天有不测风云，牛有旦夕祸福。[CQ:at,qq={enemyDick.Belongings}]的牛子[{enemyDick.NickName}]受到了你的攻击!该牛子的长度从{enemyOldLength:F1}cm变化为{newLength:F1}cm，长度变化为{lengthDifference:F2}cm。" +
-                        $"在追加攻击发动的同时，你的牛子[{newDick.NickName}]掠夺了{winnerGet:F2}cm的长度，当前长度为{newDick.Length:F1}cm。";
+                        var winnerGet = -lengthDifference * RandomGenerator.GetRandomDouble(0.3, 0.4);
+                        newDick.Length += winnerGet;
+                        await dickFighterDataBase.UpdateDickLength(newDick.Length, newDick.GUID);
+
+                        outputMessage =
+                            $”[CQ:at,qq={user_id}]，你花费{energyCost}体力，尝试使用试用牛子”真理牛子”对群内的随机牛子发动追加攻击！” +
+                            $”根据星际牛子公司测算，本次追加攻击发动的概率为{successRate * 100}%。天有不测风云，牛有旦夕祸福。[CQ:at,qq={enemyDick.Belongings}]的牛子[{enemyDick.NickName}]受到了你的攻击!该牛子的长度从{enemyOldLength:F1}cm变化为{newLength:F1}cm，长度变化为{lengthDifference:F2}cm。” +
+                            $”在追加攻击发动的同时，你的牛子[{newDick.NickName}]掠夺了{winnerGet:F2}cm的长度，当前长度为{newDick.Length:F1}cm。”;
+                    }
                 }
                 else
                 {
