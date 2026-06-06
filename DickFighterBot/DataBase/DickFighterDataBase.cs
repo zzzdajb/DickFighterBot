@@ -84,6 +84,22 @@ public partial class DickFighterDataBase
             new { ExcludedGuid = guid, UserId = userId });
     }
 
+    private async Task FixNullLengths()
+    {
+        await using var connection = new SQLiteConnection(DatabaseConnectionManager.ConnectionString);
+        await connection.OpenAsync();
+
+        var nullCount = await connection.ExecuteScalarAsync<int>(
+            "SELECT COUNT(*) FROM BasicInformation WHERE Length IS NULL");
+
+        if (nullCount > 0)
+        {
+            Logger.Warn($"检测到 {nullCount} 条 Length 为 NULL 的记录，正在回写为 0...");
+            await connection.ExecuteAsync(
+                "UPDATE BasicInformation SET Length = 0 WHERE Length IS NULL");
+        }
+    }
+
     public async Task<RankInfo> GetLengthRanks(string guid, long groupNumber)
     {
         await using var connection = new SQLiteConnection(DatabaseConnectionManager.ConnectionString);
@@ -92,21 +108,14 @@ public partial class DickFighterDataBase
         var length = await connection.ExecuteScalarAsync<double>(
             "SELECT COALESCE(Length, 0) FROM BasicInformation WHERE GUID = @GUID", new { GUID = guid });
 
-        if (length == 0)
-        {
-            await connection.ExecuteAsync(
-                "UPDATE BasicInformation SET Length = 0 WHERE GUID = @GUID AND Length IS NULL",
-                new { GUID = guid });
-        }
-
         var globalRank = await connection.ExecuteScalarAsync<int>(
-            "SELECT COUNT(*) + 1 FROM BasicInformation WHERE Length > @Length", new { Length = length });
+            "SELECT COUNT(*) + 1 FROM BasicInformation WHERE Length IS NOT NULL AND Length > @Length", new { Length = length });
 
         var globalTotal = await connection.ExecuteScalarAsync<int>(
             "SELECT COUNT(*) FROM BasicInformation");
 
         var groupRank = await connection.ExecuteScalarAsync<int>(
-            "SELECT COUNT(*) + 1 FROM BasicInformation WHERE GroupNumber = @GroupNumber AND Length > @Length",
+            "SELECT COUNT(*) + 1 FROM BasicInformation WHERE GroupNumber = @GroupNumber AND Length IS NOT NULL AND Length > @Length",
             new { GroupNumber = groupNumber, Length = length });
 
         var groupTotal = await connection.ExecuteScalarAsync<int>(

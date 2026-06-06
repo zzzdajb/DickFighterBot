@@ -26,6 +26,8 @@ public partial class DickFighterDataBase
 
     public async Task<List<Dick.Dick>> GetFirstNDicksByOrder(int n, int order = 0)
     {
+        await FixNullLengths();
+
         await using var connection = new SQLiteConnection(DatabaseConnectionManager.ConnectionString);
         await connection.OpenAsync();
 
@@ -42,6 +44,8 @@ public partial class DickFighterDataBase
 
     public async Task<List<Dick.Dick>> GetFirstNDicksByOrder(int n, long group_id, int order = 0)
     {
+        await FixNullLengths();
+
         await using var connection = new SQLiteConnection(DatabaseConnectionManager.ConnectionString);
         await connection.OpenAsync();
 
