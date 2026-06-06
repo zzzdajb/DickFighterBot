@@ -49,19 +49,19 @@ public class DickDice
         //赌注不能超过当前长度
         betAmount = Math.Min(betAmount, dick.Length);
 
-        //骰子倍率分布：期望≈1.08，方差极大
+        //骰子倍率分布：期望≈0.99，方差极大
         var roll = Random.Shared.NextDouble();
         double multiplier;
         string resultText;
 
-        if (roll < 0.05) { multiplier = 0; resultText = "💀 全输！血本无归！"; }
-        else if (roll < 0.20) { multiplier = 0.3; resultText = "😰 亏了七成..."; }
-        else if (roll < 0.35) { multiplier = 0.5; resultText = "😅 亏了一半..."; }
-        else if (roll < 0.55) { multiplier = 1.5; resultText = "🙂 小赚一笔！"; }
-        else if (roll < 0.73) { multiplier = 2; resultText = "😊 翻倍了！"; }
-        else if (roll < 0.86) { multiplier = 3; resultText = "🎉 三倍！赚大了！"; }
-        else if (roll < 0.93) { multiplier = 5; resultText = "🔥 五倍！起飞！"; }
-        else if (roll < 0.97) { multiplier = 10; resultText = "💎 十倍！超级大奖！"; }
+        if (roll < 0.12) { multiplier = 0; resultText = "💀 全输！血本无归！"; }
+        else if (roll < 0.35) { multiplier = 0.3; resultText = "😰 亏了七成..."; }
+        else if (roll < 0.57) { multiplier = 0.5; resultText = "😅 亏了一半..."; }
+        else if (roll < 0.75) { multiplier = 1.5; resultText = "🙂 小赚一笔！"; }
+        else if (roll < 0.87) { multiplier = 2; resultText = "😊 翻倍了！"; }
+        else if (roll < 0.94) { multiplier = 3; resultText = "🎉 三倍！赚大了！"; }
+        else if (roll < 0.97) { multiplier = 5; resultText = "🔥 五倍！起飞！"; }
+        else if (roll < 0.99) { multiplier = 10; resultText = "💎 十倍！超级大奖！"; }
         else { multiplier = 50; resultText = "🚀🚀🚀 五十倍！！！天选之牛！！！"; }
 
         var resultLength = betAmount * multiplier;

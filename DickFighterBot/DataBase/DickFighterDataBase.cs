@@ -89,8 +89,15 @@ public partial class DickFighterDataBase
         await using var connection = new SQLiteConnection(DatabaseConnectionManager.ConnectionString);
         await connection.OpenAsync();
 
-        var length = await connection.QueryFirstOrDefaultAsync<double>(
-            "SELECT Length FROM BasicInformation WHERE GUID = @GUID", new { GUID = guid });
+        var length = await connection.ExecuteScalarAsync<double>(
+            "SELECT COALESCE(Length, 0) FROM BasicInformation WHERE GUID = @GUID", new { GUID = guid });
+
+        if (length == 0)
+        {
+            await connection.ExecuteAsync(
+                "UPDATE BasicInformation SET Length = 0 WHERE GUID = @GUID AND Length IS NULL",
+                new { GUID = guid });
+        }
 
         var globalRank = await connection.ExecuteScalarAsync<int>(
             "SELECT COUNT(*) + 1 FROM BasicInformation WHERE Length > @Length", new { Length = length });
